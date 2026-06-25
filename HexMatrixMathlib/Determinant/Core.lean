@@ -1208,7 +1208,7 @@ private theorem matrixEquiv_setRow_p1_eq_submatrix_nMatrix
 /-- Determinant-level transport: for `p1.val < p_t.val < q.val`, replacing the
 ordered row at `r := p_t.val - 1` in `nMatrix B p1 q` by `B[p1]` produces the
 signed `nDet B p_t q` minor with sign `(-1)^(p_t.val - p1.val - 1)`. -/
-private theorem det_setRow_p1_eq_pow_mul_nDet
+private theorem det_setRow_p1
     {R : Type u} [CommRing R] {n : Nat}
     (B : Hex.Matrix R (n + 3) (n + 1)) (p1 p_t q : Fin (n + 3))
     (h1t : p1.val < p_t.val) (htq : p_t.val < q.val) :
@@ -1256,7 +1256,7 @@ theorem ordered_four_cofactorRowPairing_p2_p1_eq_pow_mul_nDet
   rw [show Hex.Matrix.cofactorRowPairing M r2 B[p1] =
       Hex.Matrix.det (Hex.Matrix.setRow M r2 B[p1]) from
     (Hex.Matrix.det_setRow_eq_cofactorRowPairing M r2 B[p1]).symm]
-  exact det_setRow_p1_eq_pow_mul_nDet B p1 p2 q h12 h2q
+  exact det_setRow_p1 B p1 p2 q h12 h2q
 
 /-- Bridge-layer transport for the ordered four-row Plucker setup.
 
@@ -1278,7 +1278,7 @@ theorem ordered_four_cofactorRowPairing_p3_p1_eq_pow_mul_nDet
   rw [show Hex.Matrix.cofactorRowPairing M r3 B[p1] =
       Hex.Matrix.det (Hex.Matrix.setRow M r3 B[p1]) from
     (Hex.Matrix.det_setRow_eq_cofactorRowPairing M r3 B[p1]).symm]
-  exact det_setRow_p1_eq_pow_mul_nDet B p1 p3 q (Nat.lt_trans h12 h23) h3qq
+  exact det_setRow_p1 B p1 p3 q (Nat.lt_trans h12 h23) h3qq
 
 private theorem matrixEquiv_nMatrix_p1_pt_eq_submatrix_setRow_q
     {R : Type u} [CommRing R] {n : Nat}
@@ -1385,7 +1385,7 @@ private theorem matrixEquiv_nMatrix_p1_pt_eq_submatrix_setRow_q
             Hex.Matrix.skipIndex2_val_of_between p1 q h1q (σ i) hσ_not_lt_p1 hσ_between_q]
         omega
 
-private theorem det_setRow_q_eq_pow_mul_nDet
+private theorem det_setRow_q
     {R : Type u} [CommRing R] {n : Nat}
     (B : Hex.Matrix R (n + 3) (n + 1)) (p1 p_t q : Fin (n + 3))
     (h1t : p1.val < p_t.val) (htq : p_t.val < q.val) :
@@ -1455,7 +1455,7 @@ theorem ordered_four_cofactorRowPairing_p2_q_eq_pow_mul_nDet
   rw [show Hex.Matrix.cofactorRowPairing M r2 B[q] =
       Hex.Matrix.det (Hex.Matrix.setRow M r2 B[q]) from
     (Hex.Matrix.det_setRow_eq_cofactorRowPairing M r2 B[q]).symm]
-  exact det_setRow_q_eq_pow_mul_nDet B p1 p2 q h12 (Nat.lt_trans h23 h3q)
+  exact det_setRow_q B p1 p2 q h12 (Nat.lt_trans h23 h3q)
 
 /-- Bridge-layer transport for the ordered four-row Plucker setup.
 
@@ -1477,7 +1477,7 @@ theorem ordered_four_cofactorRowPairing_p3_q_eq_pow_mul_nDet
   rw [show Hex.Matrix.cofactorRowPairing M r3 B[q] =
       Hex.Matrix.det (Hex.Matrix.setRow M r3 B[q]) from
     (Hex.Matrix.det_setRow_eq_cofactorRowPairing M r3 B[q]).symm]
-  exact det_setRow_q_eq_pow_mul_nDet B p1 p3 q (Nat.lt_trans h12 h23) h3q
+  exact det_setRow_q B p1 p3 q (Nat.lt_trans h12 h23) h3q
 
 theorem ordered_four_det_mul_det_setRow_setRow_eq_cofactorRowPairing_mul_sub
     {R : Type u} [CommRing R] {n : Nat}
