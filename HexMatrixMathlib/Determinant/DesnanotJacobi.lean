@@ -12,8 +12,12 @@ uses the new `module`/`public import` declarations; this project still
 uses plain `import`). Delete this file and import the upstream module
 once mathlib4 PR #37716 merges.
 -/
-import Mathlib.LinearAlgebra.Matrix.Adjugate
-import Mathlib.RingTheory.MvPolynomial.Basic
+module
+
+public import Mathlib.LinearAlgebra.Matrix.Adjugate
+public import Mathlib.RingTheory.MvPolynomial.Basic
+
+public section
 
 /-!
 # The Desnanot-Jacobi identity

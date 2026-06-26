@@ -1,9 +1,13 @@
-import HexMatrixMathlib.Basic
-import HexMatrixMathlib.Determinant.DesnanotJacobi
-import HexMatrix.Bareiss
-import HexMatrix.Determinant
-import Mathlib.LinearAlgebra.Matrix.Adjugate
-import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+module
+
+public import HexMatrixMathlib.Basic
+public import HexMatrixMathlib.Determinant.DesnanotJacobi
+public import HexMatrix.Bareiss
+public import HexMatrix.Determinant
+public import Mathlib.LinearAlgebra.Matrix.Adjugate
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+
+public section
 
 /-!
 Determinant correspondence theorems for `hex-matrix-mathlib`.
@@ -22,7 +26,7 @@ variable {R : Type u} {n : Nat}
 
 namespace PermutationVector
 
-private theorem get_injective_of_nodup
+theorem get_injective_of_nodup
     {perm : Vector (Fin n) n} (hnodup : perm.toList.Nodup) :
     Function.Injective fun i : Fin n => perm[i] := by
   intro i j hij
@@ -36,6 +40,7 @@ private theorem get_injective_of_nodup
   exact Fin.ext ((hnodup.getElem_inj_iff).mp hget)
 
 /-- Convert a Hex permutation vector into the corresponding Mathlib permutation. -/
+@[expose]
 noncomputable def toPerm (perm : Vector (Fin n) n)
     (hnodup : perm.toList.Nodup) : Equiv.Perm (Fin n) :=
   Equiv.ofBijective (fun i : Fin n => perm[i])
@@ -66,7 +71,7 @@ private theorem vectorOfPerm_toList (σ : Equiv.Perm (Fin n)) :
   · intro i hi₁ hi₂
     simp [Vector.getElem_toList]
 
-private theorem vectorOfPerm_nodup (σ : Equiv.Perm (Fin n)) :
+theorem vectorOfPerm_nodup (σ : Equiv.Perm (Fin n)) :
     (Vector.ofFn fun i : Fin n => σ i).toList.Nodup := by
   rw [vectorOfPerm_toList]
   exact List.Nodup.map σ.injective (List.nodup_finRange n)
@@ -77,6 +82,7 @@ theorem toPerm_vectorOfPerm (σ : Equiv.Perm (Fin n)) :
   simp [toPerm]
 
 /-- Hex permutation vectors converted to Mathlib permutations, with proofs attached. -/
+@[expose]
 noncomputable def equivs (n : Nat) : List (Equiv.Perm (Fin n)) :=
   (Hex.Matrix.permutationVectors n).attach.map fun perm =>
     toPerm perm.1 (Hex.Matrix.permutationVectors_nodup perm.2)
@@ -2319,6 +2325,7 @@ Bareiss pivot row/column first and the trailing row/column last.
 The order is `[k, 0, 1, ..., k-1, k+1]` in the original bordered-minor
 coordinates. Applying the same permutation to rows and columns preserves the
 determinant and makes the Desnanot interior the previous leading pivot. -/
+@[expose]
 def bareissDesnanotIndex (k : Nat) : Fin (k + 2) ≃ Fin (k + 2) where
   toFun r :=
     if hzero : r.val = 0 then

@@ -1,8 +1,12 @@
-import HexMatrixMathlib.Basic
-import HexMatrix.RREF
-import Mathlib.LinearAlgebra.Finsupp.LinearCombination
-import Mathlib.LinearAlgebra.Dimension.Constructions
-import Mathlib.LinearAlgebra.Matrix.Rank
+module
+
+public import HexMatrixMathlib.Basic
+public import HexMatrix.RREF
+public import Mathlib.LinearAlgebra.Finsupp.LinearCombination
+public import Mathlib.LinearAlgebra.Dimension.Constructions
+public import Mathlib.LinearAlgebra.Matrix.Rank
+
+public section
 
 /-!
 Rank, row-span, and nullspace correspondence theorems for `hex-matrix-mathlib`.
@@ -20,6 +24,7 @@ universe u
 variable {R : Type u} {n m : Nat}
 
 /-- Convert an executable `Vector` into Mathlib's function representation. -/
+@[expose]
 def vectorEquiv : Vector R n ≃ (Fin n → R) where
   toFun := fun v i => v[i]
   invFun := Vector.ofFn

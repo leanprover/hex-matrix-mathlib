@@ -1,5 +1,9 @@
-import HexMatrixMathlib.Determinant.Core
-import HexMatrixMathlib.Determinant.Bareiss
+module
+
+public import HexMatrixMathlib.Determinant.Core
+public import HexMatrixMathlib.Determinant.Bareiss
+
+public section
 
 /-!
 Determinant correspondence theorems for `hex-matrix-mathlib`.

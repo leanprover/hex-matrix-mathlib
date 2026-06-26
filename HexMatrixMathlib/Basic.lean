@@ -1,7 +1,11 @@
-import Mathlib.LinearAlgebra.Matrix.Reindex
-import Mathlib.LinearAlgebra.Matrix.Swap
-import Mathlib.LinearAlgebra.Matrix.Transvection
-import HexMatrix.RowEchelon
+module
+
+public import Mathlib.LinearAlgebra.Matrix.Reindex
+public import Mathlib.LinearAlgebra.Matrix.Swap
+public import Mathlib.LinearAlgebra.Matrix.Transvection
+public import HexMatrix.RowEchelon
+
+public section
 
 /-!
 Identification lemmas between `Hex.Matrix` and Mathlib's `Matrix`.
@@ -19,6 +23,7 @@ namespace HexMatrixMathlib
 universe u
 
 /-- Interpret a `Hex.Matrix` as a Mathlib `Matrix`. -/
+@[expose]
 def matrixEquiv : Hex.Matrix R n m ≃ Matrix (Fin n) (Fin m) R where
   toFun M := fun i j => M[i][j]
   invFun M := Hex.Matrix.ofFn fun i j => M i j

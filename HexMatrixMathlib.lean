@@ -1,7 +1,11 @@
-import HexMatrixMathlib.Basic
-import HexMatrixMathlib.Determinant
-import HexMatrixMathlib.Determinant.Bareiss
-import HexMatrixMathlib.RankSpanNullspace
+module
+
+public import HexMatrixMathlib.Basic
+public import HexMatrixMathlib.Determinant
+public import HexMatrixMathlib.Determinant.Bareiss
+public import HexMatrixMathlib.RankSpanNullspace
+
+public section
 
 /-!
 The `HexMatrixMathlib` library connects the executable `HexMatrix` core to

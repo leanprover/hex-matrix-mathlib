@@ -1,5 +1,9 @@
-import HexMatrixMathlib.Determinant.Core
-import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
+module
+
+public import HexMatrixMathlib.Determinant.Core
+public import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
+
+public section
 
 /-!
 No-pivot Bareiss loop invariant for `hex-matrix-mathlib`.
@@ -53,6 +57,7 @@ theorem borderedMinor_corner_eq_leadingPrefix {R : Type u}
 
 /-- Hypothesis used by the no-pivot Bareiss soundness proof: every leading
 prefix determinant up to size `n` is nonzero. -/
+@[expose]
 def NonzeroBareissPivots (M : Hex.Matrix Int n n) : Prop :=
   ∀ k : Fin n,
     Hex.Matrix.det
@@ -583,13 +588,15 @@ theorem bareissData_sign_succ (data : Hex.Matrix.BareissData n) :
     ({ data with rowSwaps := data.rowSwaps + 1 }).sign = -data.sign := by
   simp [Hex.Matrix.BareissData.sign, bareissSign_succ]
 
-private def bareissStateSign (state : Hex.Matrix.BareissState n) : Int :=
+@[expose]
+def bareissStateSign (state : Hex.Matrix.BareissState n) : Int :=
   if state.rowSwaps % 2 = 0 then 1 else -1
 
 /-- Row-pivoted Bareiss invariant. The current working state is interpreted as
 a no-pivot Bareiss state for a logical source obtained from the original source
 by the row swaps already performed; the sign field records the determinant
 relation back to the original source. -/
+@[expose]
 def BareissPivotInvariant
     (source : Hex.Matrix Int n n) (state : Hex.Matrix.BareissState n) : Prop :=
   ∃ logicalSource : Hex.Matrix Int n n,
@@ -1040,7 +1047,8 @@ hypothesis. The follow-up issue closes the determinant via
 /-- The `k × (k+1)` top block used to define the failed-pivot column
 dependence: leading `k` rows of `source`, restricted to columns `0..k-1`
 followed by column `k`. -/
-private def failedBareissTopBlock
+@[expose]
+def failedBareissTopBlock
     (source : Hex.Matrix Int n n) (k : Nat) (hk : k < n) :
     Matrix (Fin k) (Fin (k + 1)) Int :=
   fun s c =>
@@ -1054,6 +1062,7 @@ private def failedBareissTopBlock
 `c` is `(-1)^(k + c.val) * det(failedBareissTopBlock with column c removed)` for
 `c.val ≤ k` and `0` otherwise. The coefficient on column `k` is
 `det (leadingPrefix source k _)`; see `failedBareissColumn_at_pivot`. -/
+@[expose]
 noncomputable def failedBareissColumn
     (source : Hex.Matrix Int n n) (k : Nat) (hk : k < n) :
     Fin n → Int :=
