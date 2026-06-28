@@ -1,3 +1,9 @@
+/-
+Copyright (c) 2026 Lean FRO, LLC. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Kim Morrison
+-/
+
 module
 
 public import HexMatrixMathlib.Basic
@@ -8,6 +14,21 @@ public import Mathlib.LinearAlgebra.Matrix.Adjugate
 public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 
 public section
+
+/-!
+Core determinant correspondence between executable `Hex.Matrix` and Mathlib.
+
+This module proves the central bridge lemma `det_eq`: the executable
+Leibniz determinant `Hex.Matrix.det` equals `Matrix.det` of the corresponding
+Mathlib matrix `matrixEquiv M`.  It first matches Hex permutation vectors to
+Mathlib `Equiv.Perm` (`PermutationVector.toPerm`, `equivs`) and the
+inversion-count sign to `Equiv.Perm.sign` (`detSign_eq_permSign`).  Building on
+`det_eq`, it translates `matrixEquiv` of leading prefixes, bordered minors,
+deleted rows/columns, and row updates, and ports the Desnanot-Jacobi and
+adjugate row-replacement identities (`desnanot_jacobi_deleteRowCol_endpoints`,
+`det_mul_det_setRow_setRow_eq_cofactorRowPairing_mul_sub`) into the Hex API,
+plus the ordered `nMatrix`/`skipIndex2` row-transport helpers used downstream.
+-/
 
 namespace HexMatrixMathlib
 universe u v

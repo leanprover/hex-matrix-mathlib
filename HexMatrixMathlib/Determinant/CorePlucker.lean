@@ -1,9 +1,29 @@
+/-
+Copyright (c) 2026 Lean FRO, LLC. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Kim Morrison
+-/
+
 module
 
 public import HexMatrixMathlib.Determinant.CoreTransport
 import all HexMatrixMathlib.Determinant.CoreTransport
 
 public section
+
+/-!
+Mathlib-side Grassmann-Plucker identity for the executable `Hex.Matrix` minors.
+
+This module assembles the three-term Plucker relation among the ordered
+`nDet` minors of a tall matrix `B`.  Starting from the two-row replacement
+adjugate identity, it transports the double `setRow` matrix to the signed
+`nDet B p2 p3` minor via the disjoint-cycle permutation
+`cycleAhead * cycleBehind`, proving `det_double_setRow_eq_pow_mul_nDet` and the
+signed `ordered_four_signed_Plucker_p1_side`.  These combine into the raw
+kernel `det_plucker_three_term_nDet_of_ordered_four` and, after a case split on
+the position of a basis-vector row `q`, the arbitrary-row form
+`det_plucker_three_term_basisVec_of_ne` (with its diagonal `q = p_t` cases).
+-/
 
 namespace HexMatrixMathlib
 universe u v
