@@ -105,9 +105,78 @@ carrier from the type (`shape?`), the literal behind definitions
 (`matchLiteral?`, returning the dimensions, carrier, row-major entry
 expressions and the route), evaluates entries with Mathlib's
 `evalRatEntry` (`evalEntries`), quotes row lists (`rowList`), builds the
-identification proof along the route (`identification`) and elaborates a
-term-form argument with an integer expectation for the `!![…]` notations
-(`elabArgument`). `Certified` is the record the `%` term forms return.
+identification proof along the route (`identification`), adds a closed
+proof as an auxiliary lemma checked by the kernel synchronously and exactly
+once (`addClosedProof`: `mkAuxLemma` without lemma reuse, the
+declaration-checking path `decide +kernel` uses, never `mkAuxTheorem`,
+whose closure step type-checks the proof in the elaborator first and
+evaluates the certificate a second time) and elaborates a term-form
+argument with an
+integer expectation for the `!![…]` notations (`elabArgument`). `Certified` is the record the `%` term forms return.
 The empty shapes `!![]`, `!![,,,]` and `!![;;;]` are literals of their
 dimensions. Tests: `HexMatrixMathlib/Tests.lean` identifies each syntax and
 the empty shapes with its row list.
+
+
+### Requests from structural tactic frontends
+
+The [structural tactic contracts](../../SPEC/matrix-tactics.md#placement)
+require the following shared adapters:
+
+- Field-aware `%` argument elaboration, preserving the expected carrier
+  rather than defaulting every unannotated literal to integers.
+- Rational and prime-residue entry codecs with proved decoding/arithmetic
+  agreement and coherent field instances. Rational codecs preserve a `Rat`
+  input row list for definitional literal identification and certify its
+  agreement with integer rows and a positive common scale, following
+  `checkDetRat`'s boundary. Algorithm-specific products and polynomial checks
+  remain in their owning libraries.
+- Closed vector/factor-function literal recognition with a `vecOfList`
+  identification theorem, for RHSs, stated solutions, lattice members and
+  invariant-factor targets. Match the matrix layer's supported unfolding and
+  diagnostic discipline.
+
+These adapters serve `min_poly`, `smith`, `hermite`, `inverse` and `solve`;
+they introduce no shared tactic dispatcher or new library. Polynomial-target
+recognition is requested separately against hex-poly-mathlib.
+
+`Literal.elabArgument` accepts an expected carrier. `VectorLiteral`,
+`vectorEntriesEq` and `vectorIdentification` provide the closed vector route
+with the same bounded unfolding as matrices. `Rational.lean` proves decoding
+and common-denominator scaling for the integer list representation in
+`HexMatrix/Scaled.lean`; `ListProducts.lean` transports structural list
+products to both matrix representations. The rational codec is implemented;
+prime-residue support for these structural frontends is a later extension.
+The optional `trace.HexMatrix.certificate` records serialized certificate
+bytes, entry counts and numerator/denominator bit heights for proof probes.
+
+The shared `Hex.Matrix.Lists` arithmetic includes integer coefficient addition,
+scaling and convolution. `Scaled` blocks provide addition, multiplication,
+negation, subtraction and structural powers with common denominators. Both
+minimal-polynomial certificate checks and the polynomial literal adapter reuse
+these operations; neither reduces rational coefficient normalization there.
+
+## Kronecker-packed dot products
+
+`HexMatrixMathlib/Packed.lean` proves the packed dot product of
+[hex-matrix §Kronecker-packed dot products](../../HexMatrix/SPEC/hex-matrix.md#kronecker-packed-dot-products)
+exact: `packRow` is `Nat.ofDigits` at the base `2^W`
+(`packRow_eq_ofDigits`; `packCol_eq` for the Horner loop), the product of
+two packed lists is `ofDigits` of their convolution (`conv`,
+`ofDigits_conv`), a convolution coefficient of lists with entries below
+`M` is at most `r · M²` (`conv_getD_le`), digit `k` of an `ofDigits` with
+digits below the base is read off by division and remainder
+(`ofDigits_digit`), and the coefficient `r − 1` of a row against a
+reversed column is their dot product (`dotNat_eq_conv_reverse`); hence
+`dotPacked_eq`: for lists of length `r` with entries below `M` and
+`r · M² < 2^W`, `dotPacked W r (packRow W b) (packRow W c.reverse) =
+dotNat b c`, and `dotNat_pad` for a column cut or zero-padded to `r`.
+For signed rows, `dotInt_parts` splits a signed dot product into the four
+dot products of the parts and `dotIntPacked_eq` combines four instances of
+`dotPacked_eq` (with `dotNat_cut` for the row cut or padded to `r`): for a
+column of `r` entries and entries below `k` in absolute value with
+`r · k² < 2^W`, the packed signed dot product is `dotInt`. The transpose
+lemmas `columns_length`, `columns_getD` and `columns_bound` and the sums
+`dotInt_eq_sum` and `dotInt_eq_sum_right` are here as well. Every packed
+checker's equality to or implication of its plain form reduces to these
+lemmas.
